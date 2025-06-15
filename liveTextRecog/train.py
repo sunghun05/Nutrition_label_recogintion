@@ -1,9 +1,5 @@
 from ultralytics import YOLO
-import torch
 import multiprocessing
-
-print(torch.__version__)          # PyTorch 버전 확인
-print(torch.version.cuda)         # PyTorch가 인식하는 CUDA 버전 확인
 
 def main():
     # 사전학습된 모델 불러오기 (yolov8n.pt, yolov8s.pt 등 선택 가능)
@@ -24,5 +20,6 @@ def main():
         augment=True                # 데이터 증강 사용
     )
 if __name__ == '__main__':
-    multiprocessing.freeze_support()  # Windows 전용
+    multiprocessing.freeze_support()
     main()
+

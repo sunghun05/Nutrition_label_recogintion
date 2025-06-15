@@ -73,11 +73,6 @@ def find_imgs(key_word, count):
 
 if __name__ == "__main__":
     count = 3315
-    #foods = ['신라면 ', '카레 ', '3분짜장 ']
-    # foods = ['3분짜장 ']
-    #foods = ['과자 '] # 젤리
-    # foods = ['젤리 ', '아이스크림 ']
-    # foods = ['믹스커피 ']
-    foods = ['삼각김밥 ']
+    foods = ['삼각김밥 ', '믹스커피 ', '젤리 ', '아이스크림 ', '3분짜장 ', '과자 ', '신라면 ', '카레 ', '3분짜장 ']
     for keyWord in foods:
         count = find_imgs(keyWord, count)
