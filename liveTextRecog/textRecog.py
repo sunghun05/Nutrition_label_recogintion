@@ -92,20 +92,18 @@ def extract_nutrition_from_image(image_path):
 
     # 전처리
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray = cv2.bilateralFilter(gray, 9, 75, 75)
-    # thresh = cv2.adaptiveThreshold(gray, 255,
-    #                                cv2.ADAPTIVE_THRESH_MEAN_C,
-    #                                cv2.THRESH_BINARY_INV, 0, 0)
-    #gray = cv2.convertScaleAbs(gray, alpha=1.5, beta=1.5)
-    look_up_table = np.empty((1, 256), np.uint8)
-    for i in range(256):
-        look_up_table[0, i] = np.clip(pow(i / 255.0, 0.5) * 255.0, 0, 255)
-    gray = cv2.LUT(gray, look_up_table)
+    # 미디언 블러
+    # gray_blur = cv2.medianBlur(gray, 3)
 
-    plt.imshow(gray); plt.show()
+    # 비국소적 평균
+    gray_denoised = cv2.fastNlMeansDenoising(gray, None, h=5,
+                                             templateWindowSize=7, searchWindowSize=21)
+
+
+    plt.imshow(gray_denoised); plt.show()
 
     # OCR 수행
-    text = pytesseract.image_to_string(gray, lang='kor')
+    text = pytesseract.image_to_string(gray_denoised, lang='kor+eng')
 
     # 오타 보정
     for wrong, correct in corrections.items():
