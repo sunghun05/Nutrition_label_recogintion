@@ -4,9 +4,11 @@ import re
 import os
 import pandas as pd
 from difflib import get_close_matches
+import matplotlib.pyplot as plt
+import numpy as np
 
 # 🛠️ Windows용 Tesseract 설치 경로
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # 🎯 추출 대상 키워드
 keywords = [
@@ -91,12 +93,19 @@ def extract_nutrition_from_image(image_path):
     # 전처리
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     gray = cv2.bilateralFilter(gray, 9, 75, 75)
-    thresh = cv2.adaptiveThreshold(gray, 255,
-                                   cv2.ADAPTIVE_THRESH_MEAN_C,
-                                   cv2.THRESH_BINARY_INV, 15, 10)
+    # thresh = cv2.adaptiveThreshold(gray, 255,
+    #                                cv2.ADAPTIVE_THRESH_MEAN_C,
+    #                                cv2.THRESH_BINARY_INV, 0, 0)
+    #gray = cv2.convertScaleAbs(gray, alpha=1.5, beta=1.5)
+    look_up_table = np.empty((1, 256), np.uint8)
+    for i in range(256):
+        look_up_table[0, i] = np.clip(pow(i / 255.0, 0.5) * 255.0, 0, 255)
+    gray = cv2.LUT(gray, look_up_table)
+
+    plt.imshow(gray); plt.show()
 
     # OCR 수행
-    text = pytesseract.image_to_string(thresh, lang='kor+eng')
+    text = pytesseract.image_to_string(gray, lang='kor')
 
     # 오타 보정
     for wrong, correct in corrections.items():
